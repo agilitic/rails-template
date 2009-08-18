@@ -23,6 +23,7 @@ plugin 'paperclip',          :git => 'git://github.com/thoughtbot/paperclip.git'
 plugin 'acts_as_list',       :git => 'git://github.com/rails/acts_as_list.git'
 plugin 'responds_to_parent', :git => 'git://github.com/markcatley/responds_to_parent.git' if options[:use_hoptoad]
 plugin 'hoptoad_notifier',   :git => 'git://github.com/thoughtbot/hoptoad_notifier.git' if options[:use_responds_to_parent]
+plugin 'misc_validators',    :git => 'git://github.com/aurels/misc_validators.git'
 
 # Javascripts ==================================================================
 
