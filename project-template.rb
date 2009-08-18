@@ -72,16 +72,43 @@ generate :session, 'user_session'
   'app/views/admin/users/new.html.erb',
   'app/views/admin/users/edit.html.erb',
   'app/views/admin/users/show.html.erb',
-  'app/helpers/layout_helper.rb' ].each do |path|
+  'app/helpers/layout_helper.rb',
+  'app/helpers/error_messages_helper.rb' ].each do |path|
   file path, copy_remote_file(path)
 end
 
-route "map.resources :users"
-route "map.signup 'signup', :controller => 'users', :action => 'new'"
+route <<CODE
+  map.resources :users
+CODE
 
-route "map.resources :user_sessions"
-route "map.login 'login', :controller => 'user_sessions', :action => 'new'"
-route "map.logout 'logout', :controller => 'user_sessions', :action => 'destroy'"
+route <<CODE
+  map.signup 'signup',
+    :controller => 'users',
+    :action => 'new'
+CODE
+
+route <<CODE
+  map.resources :user_sessions
+CODE
+
+route <<CODE
+  map.login 'login',
+    :controller => 'user_sessions',
+    :action => 'new'
+CODE
+
+route <<CODE
+  map.logout 'logout',
+    :controller => 'user_sessions',
+    :action => 'destroy'
+CODE
+
+route <<CODE
+  map.namespace :admin do |admin|
+    admin.resources :users
+    admin.root :controller => 'users'
+  end
+CODE
 
 # Admin layout =================================================================
 
