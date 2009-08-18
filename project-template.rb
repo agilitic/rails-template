@@ -3,14 +3,23 @@
 # http://en.agilitic.com
 ################################################################################
 
+BASE_GH_URL = 'http://github.com/aurels/agilitic-templates/raw/master'
+
+def copy_remote_file(path)
+  open("#{BASE_GH_URL}/#{path}").read
+end
+
+USE_HOPTOAD = yes?('Use hoptoad_notifier?')
+USE_RESPONDS_TO_PARENT = yes?('Use responds_to_parent plugin?')
+
 # Rails plugins ================================================================
 
 plugin 'authlogic',          :git => 'git://github.com/binarylogic/authlogic.git'
 plugin 'will_paginate',      :git => 'git://github.com/mislav/will_paginate.git'
 plugin 'paperclip',          :git => 'git://github.com/thoughtbot/paperclip.git'
 plugin 'acts_as_list',       :git => 'git://github.com/rails/acts_as_list.git'
-plugin 'responds_to_parent', :git => 'git://github.com/markcatley/responds_to_parent.git'
-plugin 'hoptoad_notifier',   :git => 'git://github.com/thoughtbot/hoptoad_notifier.git'
+plugin 'responds_to_parent', :git => 'git://github.com/markcatley/responds_to_parent.git' if USE_RESPONDS_TO_PARENT
+plugin 'hoptoad_notifier',   :git => 'git://github.com/thoughtbot/hoptoad_notifier.git' if USE_HOPTOAD
 
 # Javascripts ==================================================================
 
@@ -51,49 +60,29 @@ file 'app/models/user.rb', <<RUBY
   end
 RUBY
 
-file 'app/admin/users_controller.rb', <<RUBY
-  class Admin::UsersController < ApplicationController
-    def index
-      @users = User.all
-    end
-    
-    def show
-      
-    end
-    
-    def new
-      
-    end
-    
-    def create
-      
-    end
-    
-    def edit
-      
-    end
-    
-    def update
-      
-    end
-    
-    def destroy
-      
-    end
-    
-    protected
-    
-    def get_users
-      
-    end
-    
-    def get_user
-      
-    end
-  end
-RUBY
+[ 'app/models/user.rb',
+  'app/controllers/application.rb',
+  'app/controllers/users_controller.rb',
+  'app/controllers/admin/users_controller.rb',
+  'app/views/users/index.html.erb',
+  'app/views/users/_form.html.erb',
+  'app/views/users/new.html.erb',
+  'app/views/users/edit.html.erb',
+  'app/views/users/show.html.erb',
+  'app/views/admin/users/index.html.erb',
+  'app/views/admin/users/_form.html.erb',
+  'app/views/admin/users/new.html.erb',
+  'app/views/admin/users/edit.html.erb',
+  'app/views/admin/users/show.html.erb',
+].each do |path|
+  file path, copy_remote_file(path)
+end
 
 #  route ''
+
+# Admin layout =================================================================
+
+
 
 # Misc =========================================================================
 
@@ -101,83 +90,26 @@ run "cp config/database.yml config/database.yml.sample"
 run "rm public/index.html"
 rake "db:migrate"
 
-# Git setup ====================================================================
+# Initializers =================================================================
 
-file '.gitignore', <<CONTENT
-coverage/*
-log/*.log
-log/*.pid
-db/*.db
-db/*.sqlite3
-db/schema.rb
-tmp/**/*
-.DS_Store
-doc/api
-doc/app
-config/database.yml
-public/javascripts/all.js
-public/stylesheets/all.js
-coverage/*
-.dotest/*
-Thumbs.db
-CONTENT
+if USE_HOPTOAD
+  initializer 'hoptoad.rb', <<RUBY
+    HoptoadNotifier.configure do |config|
+      config.api_key = 'HOPTOAD-KEY'
+    end
+  RUBY
+end
 
-git :init
-git :add => "."
-git :commit => "-a -m 'Initial commit'"
+# Capistrano ===================================================================
 
+capify!
 
-# initializer 'hoptoad.rb',
-# %q{HoptoadNotifier.configure do |config|
-# config.api_key = 'HOPTOAD-KEY'
-# end
-# }
+file 'Capfile', RUBY
+  load 'deploy' if respond_to?(:namespace) # cap2 differentiator
+  Dir['vendor/plugins/*/recipes/*.rb'].each { |plugin| load(plugin) }
+  load 'config/deploy'
+RUBY
 
-# capify!
-
-
-
-# file 'Capfile',
-# %q{load 'deploy' if respond_to?(:namespace) # cap2 differentiator
-# Dir['vendor/plugins/*/recipes/*.rb'].each { |plugin| load(plugin) }
-# load 'config/deploy'
-# }
-#  
-# file 'config/database.yml',
-# %q{<% PASSWORD_FILE = File.join(RAILS_ROOT, '..', '..', 'shared', 'config', 'dbpassword') %>
-#  
-# development:
-# adapter: mysql
-# database: <%= PROJECT_NAME %>_development
-# username: root
-# password:
-# host: localhost
-# encoding: utf8
-# test:
-# adapter: mysql
-# database: <%= PROJECT_NAME %>_test
-# username: root
-# password:
-# host: localhost
-# encoding: utf8
-# staging:
-# adapter: mysql
-# database: <%= PROJECT_NAME %>_staging
-# username: <%= PROJECT_NAME %>
-# password: <%= File.read(PASSWORD_FILE).chomp if File.readable? PASSWORD_FILE %>
-# host: localhost
-# encoding: utf8
-# socket: /var/lib/mysql/mysql.sock
-# production:
-# adapter: mysql
-# database: <%= PROJECT_NAME %>_production
-# username: <%= PROJECT_NAME %>
-# password: <%= File.read(PASSWORD_FILE).chomp if File.readable? PASSWORD_FILE %>
-# host: localhost
-# encoding: utf8
-# socket: /var/lib/mysql/mysql.sock
-# }
-#  
 # file 'config/deploy.rb',
 # %q{set :stages, %w(staging production)
 # set :default_stage, 'staging'
@@ -275,3 +207,68 @@ git :commit => "-a -m 'Initial commit'"
 # set :mongrel_rails, '/usr/local/bin/mongrel_rails'
 # set :mongrel_cluster_config, "#{deploy_to}/#{current_dir}/config/mongrel_cluster_production.yml"
 # }
+
+# Git setup ====================================================================
+
+file '.gitignore', <<CONTENT
+coverage/*
+log/*.log
+log/*.pid
+db/*.db
+db/*.sqlite3
+db/schema.rb
+tmp/**/*
+.DS_Store
+doc/api
+doc/app
+config/database.yml
+public/javascripts/all.js
+public/stylesheets/all.js
+coverage/*
+.dotest/*
+Thumbs.db
+CONTENT
+
+git :init
+git :add => "."
+git :commit => "-a -m 'Initial commit'"
+
+
+
+
+#  
+# file 'config/database.yml',
+# %q{<% PASSWORD_FILE = File.join(RAILS_ROOT, '..', '..', 'shared', 'config', 'dbpassword') %>
+#  
+# development:
+# adapter: mysql
+# database: <%= PROJECT_NAME %>_development
+# username: root
+# password:
+# host: localhost
+# encoding: utf8
+# test:
+# adapter: mysql
+# database: <%= PROJECT_NAME %>_test
+# username: root
+# password:
+# host: localhost
+# encoding: utf8
+# staging:
+# adapter: mysql
+# database: <%= PROJECT_NAME %>_staging
+# username: <%= PROJECT_NAME %>
+# password: <%= File.read(PASSWORD_FILE).chomp if File.readable? PASSWORD_FILE %>
+# host: localhost
+# encoding: utf8
+# socket: /var/lib/mysql/mysql.sock
+# production:
+# adapter: mysql
+# database: <%= PROJECT_NAME %>_production
+# username: <%= PROJECT_NAME %>
+# password: <%= File.read(PASSWORD_FILE).chomp if File.readable? PASSWORD_FILE %>
+# host: localhost
+# encoding: utf8
+# socket: /var/lib/mysql/mysql.sock
+# }
+# 
