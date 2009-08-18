@@ -3,7 +3,7 @@
 # http://en.agilitic.com
 ################################################################################
 
-BASE_GH_URL = 'http://github.com/aurels/agilitic-templates/raw/master'
+BASE_GH_URL = 'http://github.com/aurels/agilitic-templates/raw/master/files'
 
 def copy_remote_file(path)
   open("#{BASE_GH_URL}/#{path}").read
