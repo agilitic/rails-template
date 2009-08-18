@@ -1,0 +1,48 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+	"http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+	<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+	
+    <%= javascript_include_tag 'jquery-1.3.2.min' %>
+	<%= javascript_include_tag 'application' %>
+	
+	<%= stylesheet_link_tag 'admin' %>
+
+	<title>Administration Terrabio</title>
+	<%= yield(:head) %>
+</head>
+
+
+<body>
+	<div class="wrapper">
+	
+		<h1 class="logo">Admin Terrabio</h1>
+		<p class="txt_right"> 
+			<%= link_to "Partie publique", root_url %> 
+			<span class="v_line"> | </span>
+			<%= link_to "Editer profil", edit_admin_user_path(current_user) %>
+			<span class="v_line"> | </span>
+			<%= link_to "Logout", logout_path %>
+		</p>
+	
+		<%= render :partial => 'shared/tabs' %>
+		
+		<div class="clear"></div>
+		<div class="content">
+			
+			<div class="in">
+				<% flash.each do |name, msg| %>
+			        <%= content_tag :div, msg, :id => "flash_#{name}" %>
+			     <% end %>
+			
+				<%= yield %>
+			</div>			
+		</div>
+		
+		<p class="footer">Made by <a href="http://agilitic.com">agilitic</a></p>
+		
+	</div>
+</body>
+</html>

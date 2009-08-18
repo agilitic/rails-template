@@ -1,0 +1,21 @@
+<% form_for [:admin, @user] do |f| %>
+	<%= error_messages(@product)%>
+	<p>
+		<strong><%= f.label "Nom" %></strong><br />
+		<%= f.text_field :username %>
+	</p>
+	
+	<p>
+		<strong><%= f.label "Nouveau mot de passe" %></strong><br />
+		<%= f.password_field :password %>
+	</p>
+	
+	<p>
+		<strong><%= f.label "Confirmation du nouveau mot de passe" %></strong><br />
+		<%= f.password_field :password_confirmation %>
+	</p>
+
+	<p><%= f.submit "Sauver", :class => "large orange awesome" %> 
+		| <%= link_to "Annuler", admin_root_path %>
+	</p>
+<% end %>

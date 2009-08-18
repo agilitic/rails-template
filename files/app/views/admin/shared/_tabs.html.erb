@@ -1,0 +1,17 @@
+<div class="navigation">
+	<ul>
+		<li <%= 'class="active"' if controller.controller_name == "products"  %> >
+			<%= link_to "Produits", admin_products_path  %></li>
+		
+			<li <%= 'class="active"' if controller.controller_name == "categories"  %> >
+				<%= link_to "Catégories", admin_categories_path  %></li>
+		
+		<li <%= 'class="active"' if controller.controller_name == "users"  %> >
+			<%= link_to "Clients", admin_users_path %></li>
+		
+		<li <%= 'class="active"' if controller.controller_name == "shops"  %> >
+			<%= link_to "Points de vente", admin_shops_path %></li>
+		
+		<li><a href="#">Blog</a></li>
+	</ul>
+</div>

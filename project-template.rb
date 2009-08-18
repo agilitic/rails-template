@@ -9,8 +9,10 @@ def copy_remote_file(path)
   open("#{BASE_GH_URL}/#{path}").read
 end
 
-USE_HOPTOAD = yes?('Use hoptoad_notifier?')
-USE_RESPONDS_TO_PARENT = yes?('Use responds_to_parent plugin?')
+# Options ======================================================================
+
+options[:use_hoptoad] = yes?('Use hoptoad_notifier?')
+options[:use_responds_to_parent] = yes?('Use responds_to_parent plugin?')
 
 # Rails plugins ================================================================
 
@@ -18,8 +20,8 @@ plugin 'authlogic',          :git => 'git://github.com/binarylogic/authlogic.git
 plugin 'will_paginate',      :git => 'git://github.com/mislav/will_paginate.git'
 plugin 'paperclip',          :git => 'git://github.com/thoughtbot/paperclip.git'
 plugin 'acts_as_list',       :git => 'git://github.com/rails/acts_as_list.git'
-plugin 'responds_to_parent', :git => 'git://github.com/markcatley/responds_to_parent.git' if USE_RESPONDS_TO_PARENT
-plugin 'hoptoad_notifier',   :git => 'git://github.com/thoughtbot/hoptoad_notifier.git' if USE_HOPTOAD
+plugin 'responds_to_parent', :git => 'git://github.com/markcatley/responds_to_parent.git' if options[:use_hoptoad]
+plugin 'hoptoad_notifier',   :git => 'git://github.com/thoughtbot/hoptoad_notifier.git' if options[:use_responds_to_parent]
 
 # Javascripts ==================================================================
 
@@ -52,14 +54,6 @@ generate :session_migration
 generate :model, 'user', 'username:string', 'crypted_password:string', 'password_salt:string', 'persistance_token:string', 'admin:boolean'
 generate :session, 'user_session'
 
-file 'app/models/user.rb', <<RUBY
-  class User < ActiveRecord::Base
-    acts_as_authentic
-
-    validates_confirmation_of :password
-  end
-RUBY
-
 [ 'app/models/user.rb',
   'app/controllers/application.rb',
   'app/controllers/users_controller.rb',
@@ -73,7 +67,7 @@ RUBY
   'app/views/admin/users/_form.html.erb',
   'app/views/admin/users/new.html.erb',
   'app/views/admin/users/edit.html.erb',
-  'app/views/admin/users/show.html.erb',
+  'app/views/admin/users/show.html.erb'
 ].each do |path|
   file path, copy_remote_file(path)
 end
@@ -82,7 +76,16 @@ end
 
 # Admin layout =================================================================
 
-
+[ 'app/views/layouts/admin.html.erb',
+  'app/views/shared/_tabs.html.erb',
+  'public/stylesheets/admin.css',
+  'public/images/admin/alert-overlay.png',
+  'public/images/admin/check.gif',
+  'public/images/admin/x.gif',
+  'public/images/admin/x2.gif'
+].each do |path|
+  file path, copy_remote_file(path)
+end
 
 # Misc =========================================================================
 
@@ -92,23 +95,23 @@ rake "db:migrate"
 
 # Initializers =================================================================
 
-if USE_HOPTOAD
-  initializer 'hoptoad.rb', <<RUBY
+if options[:use_hoptoad]
+  initializer 'hoptoad.rb', <<CODE
     HoptoadNotifier.configure do |config|
       config.api_key = 'HOPTOAD-KEY'
     end
-  RUBY
+  CODE
 end
 
 # Capistrano ===================================================================
 
 capify!
 
-file 'Capfile', RUBY
+file 'Capfile', CODE
   load 'deploy' if respond_to?(:namespace) # cap2 differentiator
   Dir['vendor/plugins/*/recipes/*.rb'].each { |plugin| load(plugin) }
   load 'config/deploy'
-RUBY
+CODE
 
 # file 'config/deploy.rb',
 # %q{set :stages, %w(staging production)
@@ -211,22 +214,22 @@ RUBY
 # Git setup ====================================================================
 
 file '.gitignore', <<CONTENT
-coverage/*
-log/*.log
-log/*.pid
-db/*.db
-db/*.sqlite3
-db/schema.rb
-tmp/**/*
-.DS_Store
-doc/api
-doc/app
-config/database.yml
-public/javascripts/all.js
-public/stylesheets/all.js
-coverage/*
-.dotest/*
-Thumbs.db
+  coverage/*
+  log/*.log
+  log/*.pid
+  db/*.db
+  db/*.sqlite3
+  db/schema.rb
+  tmp/**/*
+  .DS_Store
+  doc/api
+  doc/app
+  config/database.yml
+  public/javascripts/all.js
+  public/stylesheets/all.js
+  coverage/*
+  .dotest/*
+  Thumbs.db
 CONTENT
 
 git :init
