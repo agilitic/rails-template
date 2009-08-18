@@ -1,4 +1,4 @@
-<% title "New User Session" %>
+<% title "Login" %>
 
 <% form_for @user_session do |f| %>
   <%= f.error_messages %>
@@ -10,7 +10,6 @@
     <%= f.label :password %><br />
     <%= f.password_field :password %>
   </p>
-  <p><%= f.submit "Submit" %> | <%= link_to "Cancel", root_url %></p>
+  <p><%= f.submit "Submit" %></p>
 <% end %>
-
 

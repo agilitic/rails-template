@@ -11,6 +11,7 @@ end
 
 # Options ======================================================================
 
+options = {}
 options[:use_hoptoad] = yes?('Use hoptoad_notifier?')
 options[:use_responds_to_parent] = yes?('Use responds_to_parent plugin?')
 
@@ -54,25 +55,32 @@ generate :session_migration
 generate :model, 'user', 'username:string', 'email:string', 'crypted_password:string', 'password_salt:string', 'persistance_token:string', 'admin:boolean'
 generate :session, 'user_session'
 
-[ 'app/models/user.rb',
+[ 'app/views/layouts/application.html.erb',
+  'app/models/user.rb',
   'app/controllers/application.rb',
+  'app/controllers/base_controller.rb',
   'app/controllers/users_controller.rb',
+  'app/controllers/user_sessions_controller.rb',
+  'app/controllers/admin/base_controller.rb',
   'app/controllers/admin/users_controller.rb',
-  'app/views/users/index.html.erb',
   'app/views/users/_form.html.erb',
   'app/views/users/new.html.erb',
   'app/views/users/edit.html.erb',
-  'app/views/users/show.html.erb',
   'app/views/admin/users/index.html.erb',
   'app/views/admin/users/_form.html.erb',
   'app/views/admin/users/new.html.erb',
   'app/views/admin/users/edit.html.erb',
-  'app/views/admin/users/show.html.erb'
-].each do |path|
+  'app/views/admin/users/show.html.erb',
+  'app/helpers/layout_helper.rb' ].each do |path|
   file path, copy_remote_file(path)
 end
 
-#  route ''
+route "map.resources :users"
+route "map.signup 'signup', :controller => 'users', :action => 'new'"
+
+route "map.resources :user_sessions"
+route "map.login 'login', :controller => 'user_sessions', :action => 'new'"
+route "map.logout 'logout', :controller => 'user_sessions', :action => 'destroy'"
 
 # Admin layout =================================================================
 
@@ -82,8 +90,7 @@ end
   'public/images/admin/alert-overlay.png',
   'public/images/admin/check.gif',
   'public/images/admin/x.gif',
-  'public/images/admin/x2.gif'
-].each do |path|
+  'public/images/admin/x2.gif' ].each do |path|
   file path, copy_remote_file(path)
 end
 
@@ -95,53 +102,53 @@ rake "db:migrate"
 
 # Initializers =================================================================
 
-if options[:use_hoptoad]
-  initializer 'hoptoad.rb', <<CODE
-    HoptoadNotifier.configure do |config|
-      config.api_key = 'HOPTOAD-KEY'
-    end
-  CODE
-end
+# if options[:use_hoptoad]
+#   initializer 'hoptoad.rb', <<CODE
+#     HoptoadNotifier.configure do |config|
+#       config.api_key = 'HOPTOAD-KEY'
+#     end
+#   CODE
+# end
 
 # Capistrano ===================================================================
 
 capify!
 
-file 'Capfile', CODE
-  load 'deploy' if respond_to?(:namespace) # cap2 differentiator
-  Dir['vendor/plugins/*/recipes/*.rb'].each { |plugin| load(plugin) }
-  load 'config/deploy'
-CODE
-
-file 'config/deploy.rb', <<CODE
-  set :application, "changeme"
-  set :repository,  "ssh://agilitic.com/git/changeme.git"
-
-  set :scm,                   :git
-  set :branch,                "master"
-  set :deploy_via,            :remote_cache
-
-  set :deploy_to, "/www/changeme"
-
-  role :app, "malisart.be"
-  role :web, "malisart.be"
-  role :db,  "malisart.be", :primary => true
-
-  set :user,   "aurels"
-  set :runner, "aurels"
-
-  namespace :deploy do
-    desc "Restarting mod_rails with restart.txt"
-    task :restart, :roles => :app, :except => { :no_release => true } do
-      run "touch #{current_path}/tmp/restart.txt"
-    end
-
-    [:start, :stop].each do |t|
-      desc "#{t} task is a no-op with mod_rails"
-      task t, :roles => :app do ; end
-    end
-  end
-CODE
+# file 'Capfile', CODE
+#   load 'deploy' if respond_to?(:namespace) # cap2 differentiator
+#   Dir['vendor/plugins/*/recipes/*.rb'].each { |plugin| load(plugin) }
+#   load 'config/deploy'
+# CODE
+# 
+# file 'config/deploy.rb', <<CODE
+#   set :application, "#{PROJECT_NAME}"
+#   set :repository,  "ssh://agilitic.com/git/#{PROJECT_NAME}.git"
+# 
+#   set :scm,                   :git
+#   set :branch,                "master"
+#   set :deploy_via,            :remote_cache
+# 
+#   set :deploy_to, "/www/#{PROJECT_NAME}"
+# 
+#   role :app, "agilitic.com"
+#   role :web, "agilitic.com"
+#   role :db,  "agilitic.com", :primary => true
+# 
+#   set :user,   "deploybot"
+#   set :runner, "deploybot"
+# 
+#   namespace :deploy do
+#     desc "Restarting mod_rails with restart.txt"
+#     task :restart, :roles => :app, :except => { :no_release => true } do
+#       run "touch #{current_path}/tmp/restart.txt"
+#     end
+# 
+#     [:start, :stop].each do |t|
+#       desc "#{t} task is a no-op with mod_rails"
+#       task t, :roles => :app do ; end
+#     end
+#   end
+# CODE
 
 # Git setup ====================================================================
 
