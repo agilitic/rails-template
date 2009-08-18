@@ -51,7 +51,7 @@ CODE
 # Authentication system ========================================================
 
 generate :session_migration
-generate :model, 'user', 'username:string', 'crypted_password:string', 'password_salt:string', 'persistance_token:string', 'admin:boolean'
+generate :model, 'user', 'username:string', 'email:string', 'crypted_password:string', 'password_salt:string', 'persistance_token:string', 'admin:boolean'
 generate :session, 'user_session'
 
 [ 'app/models/user.rb',
@@ -113,103 +113,35 @@ file 'Capfile', CODE
   load 'config/deploy'
 CODE
 
-# file 'config/deploy.rb',
-# %q{set :stages, %w(staging production)
-# set :default_stage, 'staging'
-# require 'capistrano/ext/multistage'
-#  
-# before "deploy:setup", "db:password"
-#  
-# namespace :deploy do
-# desc "Default deploy - updated to run migrations"
-# task :default do
-# set :migrate_target, :latest
-# update_code
-# migrate
-# symlink
-# restart
-# end
-# desc "Start the mongrels"
-# task :start do
-# send(run_method, "cd #{deploy_to}/#{current_dir} && #{mongrel_rails} cluster::start --config #{mongrel_cluster_config}")
-# end
-# desc "Stop the mongrels"
-# task :stop do
-# send(run_method, "cd #{deploy_to}/#{current_dir} && #{mongrel_rails} cluster::stop --config #{mongrel_cluster_config}")
-# end
-# desc "Restart the mongrels"
-# task :restart do
-# send(run_method, "cd #{deploy_to}/#{current_dir} && #{mongrel_rails} cluster::restart --config #{mongrel_cluster_config}")
-# end
-# desc "Run this after every successful deployment"
-# task :after_default do
-# cleanup
-# end
-# end
-#  
-# namespace :db do
-# desc "Create database password in shared path"
-# task :password do
-# set :db_password, Proc.new { Capistrano::CLI.password_prompt("Remote database password: ") }
-# run "mkdir -p #{shared_path}/config"
-# put db_password, "#{shared_path}/config/dbpassword"
-# end
-# end
-# }
-#  
-# file 'config/deploy/staging.rb',
-# %q{# For migrations
-# set :rails_env, 'staging'
-#  
-# # Who are we?
-# set :application, 'CHANGEME'
-# set :repository, "git@github.com:thoughtbot/#{application}.git"
-# set :scm, "git"
-# set :deploy_via, :remote_cache
-# set :branch, "staging"
-#  
-# # Where to deploy to?
-# role :web, "staging.example.com"
-# role :app, "staging.example.com"
-# role :db, "staging.example.com", :primary => true
-#  
-# # Deploy details
-# set :user, "#{application}"
-# set :deploy_to, "/home/#{user}/apps/#{application}"
-# set :use_sudo, false
-# set :checkout, 'export'
-#  
-# # We need to know how to use mongrel
-# set :mongrel_rails, '/usr/local/bin/mongrel_rails'
-# set :mongrel_cluster_config, "#{deploy_to}/#{current_dir}/config/mongrel_cluster_staging.yml"
-# }
-#  
-# file 'config/deploy/production.rb',
-# %q{# For migrations
-# set :rails_env, 'production'
-#  
-# # Who are we?
-# set :application, 'CHANGEME'
-# set :repository, "git@github.com:thoughtbot/#{application}.git"
-# set :scm, "git"
-# set :deploy_via, :remote_cache
-# set :branch, "production"
-#  
-# # Where to deploy to?
-# role :web, "production.example.com"
-# role :app, "production.example.com"
-# role :db, "production.example.com", :primary => true
-#  
-# # Deploy details
-# set :user, "#{application}"
-# set :deploy_to, "/home/#{user}/apps/#{application}"
-# set :use_sudo, false
-# set :checkout, 'export'
-#  
-# # We need to know how to use mongrel
-# set :mongrel_rails, '/usr/local/bin/mongrel_rails'
-# set :mongrel_cluster_config, "#{deploy_to}/#{current_dir}/config/mongrel_cluster_production.yml"
-# }
+file 'config/deploy.rb', <<CODE
+  set :application, "changeme"
+  set :repository,  "ssh://agilitic.com/git/changeme.git"
+
+  set :scm,                   :git
+  set :branch,                "master"
+  set :deploy_via,            :remote_cache
+
+  set :deploy_to, "/www/changeme"
+
+  role :app, "malisart.be"
+  role :web, "malisart.be"
+  role :db,  "malisart.be", :primary => true
+
+  set :user,   "aurels"
+  set :runner, "aurels"
+
+  namespace :deploy do
+    desc "Restarting mod_rails with restart.txt"
+    task :restart, :roles => :app, :except => { :no_release => true } do
+      run "touch #{current_path}/tmp/restart.txt"
+    end
+
+    [:start, :stop].each do |t|
+      desc "#{t} task is a no-op with mod_rails"
+      task t, :roles => :app do ; end
+    end
+  end
+CODE
 
 # Git setup ====================================================================
 
@@ -235,43 +167,3 @@ CONTENT
 git :init
 git :add => "."
 git :commit => "-a -m 'Initial commit'"
-
-
-
-
-#  
-# file 'config/database.yml',
-# %q{<% PASSWORD_FILE = File.join(RAILS_ROOT, '..', '..', 'shared', 'config', 'dbpassword') %>
-#  
-# development:
-# adapter: mysql
-# database: <%= PROJECT_NAME %>_development
-# username: root
-# password:
-# host: localhost
-# encoding: utf8
-# test:
-# adapter: mysql
-# database: <%= PROJECT_NAME %>_test
-# username: root
-# password:
-# host: localhost
-# encoding: utf8
-# staging:
-# adapter: mysql
-# database: <%= PROJECT_NAME %>_staging
-# username: <%= PROJECT_NAME %>
-# password: <%= File.read(PASSWORD_FILE).chomp if File.readable? PASSWORD_FILE %>
-# host: localhost
-# encoding: utf8
-# socket: /var/lib/mysql/mysql.sock
-# production:
-# adapter: mysql
-# database: <%= PROJECT_NAME %>_production
-# username: <%= PROJECT_NAME %>
-# password: <%= File.read(PASSWORD_FILE).chomp if File.readable? PASSWORD_FILE %>
-# host: localhost
-# encoding: utf8
-# socket: /var/lib/mysql/mysql.sock
-# }
-# 
