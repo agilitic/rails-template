@@ -186,11 +186,15 @@ if options[:use_geokit]
   ])
 end
 
+copy_remote_file 'config/initializers/fix_errors.rb'
+
 # Capistrano ===================================================================
 
 capify!
 
 copy_remote_file 'config/deploy.rb'
+
+run "cp config/environments/production.rb config/environments/staging.rb"
 
 # Git setup ====================================================================
 
