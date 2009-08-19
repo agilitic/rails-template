@@ -13,7 +13,7 @@ class Admin::UsersController < Admin::BaseController
   end
   
   def create
-    @user = User.new
+    @user = User.new(params[:user])
     if @user.save
       redirect_to admin_users_path
     else

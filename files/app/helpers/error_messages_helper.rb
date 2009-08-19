@@ -3,7 +3,7 @@ module ErrorMessagesHelper
     unless model.nil? || model.errors.empty?
       errors = model.errors.collect do |att, msgs|
         msgs.collect do
-           |m| content_tag(:li, m)
+           |m| content_tag(:li, "#{att} #{m}")
         end
       end
     content_tag(:ul, errors.flatten , :class => 'errorExplanation')
