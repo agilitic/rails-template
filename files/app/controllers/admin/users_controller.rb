@@ -15,7 +15,7 @@ class Admin::UsersController < Admin::BaseController
   def create
     @user = User.new
     if @user.save
-      redirect_to users_path
+      redirect_to admin_users_path
     else
       render :action => 'new'
     end
@@ -28,7 +28,7 @@ class Admin::UsersController < Admin::BaseController
   def update
     @user = get_user
     if @user.update_attributes(params[:user])
-      redirect_to users_path
+      redirect_to admin_users_path
     else
       render :action => 'edit'
     end
@@ -37,7 +37,7 @@ class Admin::UsersController < Admin::BaseController
   def destroy
     @user = get_user
     @user.destroy
-    redirect_to users_path
+    redirect_to admin_users_path
   end
   
   # Methods ====================================================================

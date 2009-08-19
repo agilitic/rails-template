@@ -1,26 +1,25 @@
 <% form_for [:admin, @user] do |f| %>
-	<%= error_messages(@product)%>
+	<%= error_messages @user %>
 	
-	<p>
+	<div>
 		<strong><%= f.label :username %></strong><br />
 		<%= f.text_field :username %>
-	</p>
+	</div>
 	
-	<p>
+	<div>
 		<strong><%= f.label :email %></strong><br />
 		<%= f.text_field :email %>
-	</p>
+	</div>
 	
-	<p>
+	<div>
 		<strong><%= f.label :password %></strong><br />
 		<%= f.password_field :password %>
-	</p>
+	</div>
 	
-	<p>
+	<div>
 		<strong><%= f.label :password_confirmation %></strong><br />
 		<%= f.password_field :password_confirmation %>
-	</p>
+	</div>
 
-	<p><%= f.submit "Save", :class => "large orange awesome" %> 
-	</p>
+	<div><%= f.submit "Save", :class => "large orange awesome" %> </div>
 <% end %>
