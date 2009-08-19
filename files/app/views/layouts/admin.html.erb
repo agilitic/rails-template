@@ -2,6 +2,7 @@
 	"http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+
 <head>
 	<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
 	<title>Admin - <%= h(yield(:title) || "Untitled") %></title>
@@ -29,14 +30,18 @@
 			<div class="in">
 				<% flash.each do |name, msg| %>
 			        <%= content_tag :div, msg, :id => "flash_#{name}" %>
-			     <% end %>
+			    <% end %>
+			
+				<% if show_title? %>
+					<h1><%=h yield(:title) %></h1>
+				<% end %>
 			
 				<%= yield %>
 			</div>			
 		</div>
 		
 		<p class="footer">Made by <a href="http://agilitic.com">agilitic</a></p>
-		
 	</div>
 </body>
+
 </html>
