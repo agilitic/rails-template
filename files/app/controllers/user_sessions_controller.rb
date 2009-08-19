@@ -15,7 +15,7 @@ class UserSessionsController < BaseController
   def create
     @user_session = UserSession.new(params[:user_session])
     if @user_session.save
-      if current_user.admin?
+      if @user_session.record.admin?
         redirect_to admin_root_path
       else
         redirect_to root_url
