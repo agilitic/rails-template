@@ -10,6 +10,16 @@
 </head>
 
 <body>
+	<div id="user_nav" style="float: right;">
+	  <% if current_user %>
+	    <%= link_to "Edit Profile", edit_user_path(:current) %> |
+	    <%= link_to "Logout", logout_path %>
+	  <% else %>
+	    <%= link_to "Register", register_path %> |
+	    <%= link_to "Login", login_path %>
+	  <% end %>
+	</div>
+	
 	<% if show_title? %>
 		<h1><%=h yield(:title) %></h1>
 	<% end %>
