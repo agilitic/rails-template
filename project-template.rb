@@ -26,8 +26,8 @@ plugin 'authlogic',          :git => 'git://github.com/binarylogic/authlogic.git
 plugin 'will_paginate',      :git => 'git://github.com/mislav/will_paginate.git'
 plugin 'paperclip',          :git => 'git://github.com/thoughtbot/paperclip.git'
 plugin 'acts_as_list',       :git => 'git://github.com/rails/acts_as_list.git'
-plugin 'responds_to_parent', :git => 'git://github.com/markcatley/responds_to_parent.git' if options[:use_hoptoad]
-plugin 'hoptoad_notifier',   :git => 'git://github.com/thoughtbot/hoptoad_notifier.git' if options[:use_responds_to_parent]
+plugin 'responds_to_parent', :git => 'git://github.com/markcatley/responds_to_parent.git' if options[:use_responds_to_parent]
+plugin 'hoptoad_notifier',   :git => 'git://github.com/thoughtbot/hoptoad_notifier.git' if options[:use_hoptoad]
 plugin 'misc_validators',    :git => 'git://github.com/aurels/misc_validators.git'
 gem 'geokit' if options[:use_geokit]
 
@@ -50,7 +50,7 @@ CODE
 # Authentication system & admin layout =========================================
 
 generate :session_migration
-generate :model, 'user', 'username:string', 'email:string', 'crypted_password:string', 'password_salt:string', 'persistance_token:string', 'admin:boolean'
+generate :model, 'user', 'username:string', 'email:string', 'crypted_password:string', 'password_salt:string', 'persistence_token:string', 'admin:boolean'
 generate :session, 'user_session'
 
 copy_remote_files([

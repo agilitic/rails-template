@@ -1,4 +1,6 @@
 class Admin::BaseController < ApplicationController
+  layout 'admin'
+  
   # Filters ====================================================================
   
   # Actions ====================================================================
