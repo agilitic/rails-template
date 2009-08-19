@@ -66,7 +66,7 @@ copy_remote_files([
 copy_remote_files([
   'app/views/layouts/application.html.erb',
   'app/models/user.rb',
-  'app/controllers/application.rb',
+  'app/controllers/application_controller.rb',
   'app/controllers/base_controller.rb',
   'app/controllers/users_controller.rb',
   'app/controllers/user_sessions_controller.rb',
