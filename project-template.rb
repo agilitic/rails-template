@@ -36,6 +36,12 @@ gem 'geokit' if options[:use_geokit]
 rakefile "bootstrap.rake", <<CODE
   namespace :app do
     task :bootstrap do
+      User.create do |u|
+        u.username              = 'admin'
+        u.password              = 'admin'
+        u.password_confirmation = 'admin'
+        u.email                 = 'admin@admin.com'
+      end
     end
   end
 CODE
@@ -119,6 +125,10 @@ route <<CODE
   end
 CODE
 
+route <<CODE
+  map.root :controller => 'users'
+CODE
+
 # Javascripts ==================================================================
 
 copy_remote_files([
@@ -159,6 +169,7 @@ run "rm public/javascripts/dragdrop.js"
 run "rm public/javascripts/controls.js"
 rake "db:migrate"
 rake "gems:install"
+rake "app:bootstrap"
 
 # Initializers =================================================================
 

@@ -1,5 +1,9 @@
 class UsersController < BaseController
-  # Actions ====================================================================  
+  # Actions ====================================================================
+  def index
+    @users = User.all
+  end
+  
   def new
     @user = User.new
   end
