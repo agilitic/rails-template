@@ -3,27 +3,16 @@
 <table cellspacing="0" cellpadding="10" class="table_main">
 	<thead>
 		<tr>
-        	<th width="65%">NOM</th>
-            <th>COUPON</th>
-        	<th>ACTION</th>
+        	<th>Username</th>
+            <th>Email</th>
+        	<th>Actions</th>
         </tr>
 	</thead>
 	<tbody>
-		<% for user in @users %>
-			<tr>
-				<td><%= user.username %></td>
-				<td><%= user.plain_password %></td>
-				<td>
-					<%= link_to "Editer", edit_admin_user_path(user) %>
-					<span class="v_line">|
-					<%= link_to "Effacer", [:admin, user], :confirm => 'Are you sure?', :method => :delete, :class => "delete" %>
-					</span>
-				</td>
-			</tr>
-		<% end %>
+		<%= render @users %>
 	</tbody>
 </table>
 
 <div id="table_actions">
-	<%= link_to "Ajouter client", new_admin_user_path, :class => "large orange awesome" %>
+	<%= link_to "New user", new_admin_user_path, :class => "large orange awesome" %>
 </div>

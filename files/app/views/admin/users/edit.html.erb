@@ -1,7 +1,3 @@
-<% title "Edition du profil" %>
+<% title "Edit user" %>
 
-<% if @user.admin? %>
-	<%= render :partial => 'form_admin' %>
-<% else %>
-	<%= render :partial => 'form_client' %>
-<% end %>
+<%= render 'form' %>

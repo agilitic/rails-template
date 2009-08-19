@@ -1,20 +1,26 @@
 <% form_for [:admin, @user] do |f| %>
 	<%= error_messages(@product)%>
+	
 	<p>
-		<strong><%= f.label "Nom" %></strong><br />
+		<strong><%= f.label :username %></strong><br />
 		<%= f.text_field :username %>
 	</p>
 	
 	<p>
-		<strong><%= f.label "Nouveau mot de passe" %></strong><br />
+		<strong><%= f.label :email %></strong><br />
+		<%= f.text_field :email %>
+	</p>
+	
+	<p>
+		<strong><%= f.label :password %></strong><br />
 		<%= f.password_field :password %>
 	</p>
 	
 	<p>
-		<strong><%= f.label "Confirmation du nouveau mot de passe" %></strong><br />
+		<strong><%= f.label :password_confirmation %></strong><br />
 		<%= f.password_field :password_confirmation %>
 	</p>
 
-	<p><%= f.submit "Sauver", :class => "large orange awesome" %> 
+	<p><%= f.submit "Save", :class => "large orange awesome" %> 
 	</p>
 <% end %>
