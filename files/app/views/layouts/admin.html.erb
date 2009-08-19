@@ -4,7 +4,7 @@
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
 <head>
 	<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
-	<title>Admin</title>
+	<title>Admin - <%= h(yield(:title) || "Untitled") %></title>
 	
 	<%= stylesheet_link_tag 'admin' %>
 	<%= yield(:head) %>
@@ -16,7 +16,6 @@
 	
 		<h1 class="logo">Admin</h1>
 		<p class="txt_right">  
-			<span class="v_line"> | </span>
 			<%= link_to "Edit profile", edit_admin_user_path(current_user) %>
 			<span class="v_line"> | </span>
 			<%= link_to "Logout", logout_path %>

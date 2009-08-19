@@ -1,4 +1,12 @@
 class UserSessionsController < BaseController
+  # Filters ====================================================================
+  
+  before_filter :login_required,
+    :only => [:destroy]
+    
+  before_filter :no_login_required,
+    :only => [:new, :create]
+  
   # Actions ====================================================================
   def new
     @user_session = UserSession.new
@@ -7,7 +15,11 @@ class UserSessionsController < BaseController
   def create
     @user_session = UserSession.new(params[:user_session])
     if @user_session.save
-      redirect_to root_url
+      if current_user.admin?
+        redirect_to admin_root_path
+      else
+        redirect_to root_url
+      end
     else
       render :action => 'new'
     end
