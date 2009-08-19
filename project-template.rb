@@ -47,11 +47,21 @@ rakefile "seed.rake", <<CODE
   end
 CODE
 
-# Authentication system ========================================================
+# Authentication system & admin layout =========================================
 
 generate :session_migration
 generate :model, 'user', 'username:string', 'email:string', 'crypted_password:string', 'password_salt:string', 'persistance_token:string', 'admin:boolean'
 generate :session, 'user_session'
+
+copy_remote_files([
+  'app/views/layouts/admin.html.erb',
+  'app/views/shared/_tabs.html.erb',
+  'public/stylesheets/admin.css',
+  'public/images/admin/alert-overlay.png',
+  'public/images/admin/check.gif',
+  'public/images/admin/x.gif',
+  'public/images/admin/x2.gif'
+])
 
 copy_remote_files([
   'app/views/layouts/application.html.erb',
@@ -107,18 +117,6 @@ route <<CODE
   end
 CODE
 
-# Admin layout =================================================================
-
-copy_remote_files([
-  'app/views/layouts/admin.html.erb',
-  'app/views/shared/_tabs.html.erb',
-  'public/stylesheets/admin.css',
-  'public/images/admin/alert-overlay.png',
-  'public/images/admin/check.gif',
-  'public/images/admin/x.gif',
-  'public/images/admin/x2.gif'
-])
-
 # Javascripts ==================================================================
 
 copy_remote_files([
@@ -163,6 +161,16 @@ rake "db:migrate"
 #       config.api_key = 'HOPTOAD-KEY'
 #     end
 #   CODE
+# end
+
+# if options[:use_geokit]
+#   initializer 'geokit.rb' <<CODE
+#   
+#   CODE
+#   
+#   file 'config/gmaps.yml', <<YML
+#   
+#   YML
 # end
 
 # Capistrano ===================================================================
