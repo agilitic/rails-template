@@ -3,6 +3,8 @@ class Admin::BaseController < ApplicationController
   
   # Filters ====================================================================
   
+  before_filter :login_and_admin_required
+  
   # Actions ====================================================================
   
   # Methods ====================================================================
