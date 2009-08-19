@@ -1,0 +1,10 @@
+<tr>
+	<td><%= user.username %></td>
+	<td><%= mail_to user.email %></td>
+	<td>
+		<%= link_to "Edit", [:edit, :admin, user] %>
+		<span class="v_line"> |
+			<%= link_to "Delete", [:admin, user], :confirm => 'Are you sure?', :method => :delete, :class => "delete" %>
+		</span>
+	</td>
+</tr>
