@@ -9,13 +9,18 @@ def copy_remote_file(path)
   open("#{BASE_GH_URL}/#{path}").read
 end
 
+def copy_remote_files(array)
+  array.each { |i| copy_remote_file(i) }
+end
+
 # Options ======================================================================
 
 options = {}
-options[:use_hoptoad] = yes?('Use hoptoad_notifier?')
+options[:use_hoptoad] = yes?('Use hoptoad_notifier plugin?')
+options[:use_geokit] = yes?('Use GeoKit gem?')
 options[:use_responds_to_parent] = yes?('Use responds_to_parent plugin?')
 
-# Rails plugins ================================================================
+# Rails plugins & gems =========================================================
 
 plugin 'authlogic',          :git => 'git://github.com/binarylogic/authlogic.git'
 plugin 'will_paginate',      :git => 'git://github.com/mislav/will_paginate.git'
@@ -24,15 +29,7 @@ plugin 'acts_as_list',       :git => 'git://github.com/rails/acts_as_list.git'
 plugin 'responds_to_parent', :git => 'git://github.com/markcatley/responds_to_parent.git' if options[:use_hoptoad]
 plugin 'hoptoad_notifier',   :git => 'git://github.com/thoughtbot/hoptoad_notifier.git' if options[:use_responds_to_parent]
 plugin 'misc_validators',    :git => 'git://github.com/aurels/misc_validators.git'
-
-# Javascripts ==================================================================
-
-# jquery
-# jquery.ui
-# facebox
-# jquery.tablednd
-# jquery.infinitecarousel
-# lwrte
+gem 'geokit' if options[:use_geokit]
 
 # Empty rake tasks =============================================================
 
@@ -56,7 +53,8 @@ generate :session_migration
 generate :model, 'user', 'username:string', 'email:string', 'crypted_password:string', 'password_salt:string', 'persistance_token:string', 'admin:boolean'
 generate :session, 'user_session'
 
-[ 'app/views/layouts/application.html.erb',
+copy_remote_files([
+  'app/views/layouts/application.html.erb',
   'app/models/user.rb',
   'app/controllers/application.rb',
   'app/controllers/base_controller.rb',
@@ -73,9 +71,8 @@ generate :session, 'user_session'
   'app/views/admin/users/edit.html.erb',
   'app/views/admin/users/show.html.erb',
   'app/helpers/layout_helper.rb',
-  'app/helpers/error_messages_helper.rb' ].each do |path|
-  file path, copy_remote_file(path)
-end
+  'app/helpers/error_messages_helper.rb'
+])
 
 route <<CODE
   map.resources :users
@@ -112,15 +109,45 @@ CODE
 
 # Admin layout =================================================================
 
-[ 'app/views/layouts/admin.html.erb',
+copy_remote_files([
+  'app/views/layouts/admin.html.erb',
   'app/views/shared/_tabs.html.erb',
   'public/stylesheets/admin.css',
   'public/images/admin/alert-overlay.png',
   'public/images/admin/check.gif',
   'public/images/admin/x.gif',
-  'public/images/admin/x2.gif' ].each do |path|
-  file path, copy_remote_file(path)
-end
+  'public/images/admin/x2.gif'
+])
+
+# Javascripts ==================================================================
+
+copy_remote_files([
+  'public/javascripts/jquery-1.3.2.min.js',
+  'public/javascripts/jquery.ui-1.7.2.custom.min.js',
+  'public/javascripts/jquery.tablednd.js'
+])
+
+copy_remote_files([
+  'public/facebox/b.png',
+  'public/facebox/bl.png',
+  'public/facebox/br.png',
+  'public/facebox/closelabel.gif',
+  'public/facebox/facebox.css',
+  'public/facebox/facebox.js',
+  'public/facebox/loading.gif',
+  'public/facebox/README.txt',
+  'public/facebox/tl.png',
+  'public/facebox/tr.png'
+])
+
+copy_remote_files([
+  'public/infinite_carousel/images/arrow_blank.png',
+  'public/infinite_carousel/images/arrow.png',
+  'public/infinite_carousel/infinite_carousel.css',
+  'public/infinite_carousel/infinite_carousel.js',
+])
+
+# lwrte
 
 # Misc =========================================================================
 
