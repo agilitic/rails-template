@@ -41,6 +41,7 @@ rakefile "bootstrap.rake", <<CODE
         u.password              = 'admin'
         u.password_confirmation = 'admin'
         u.email                 = 'admin@admin.com'
+        u.admin                 = true
       end
     end
   end
@@ -61,7 +62,7 @@ generate :session, 'user_session'
 
 copy_remote_files([
   'app/views/layouts/admin.html.erb',
-  'app/views/shared/_tabs.html.erb',
+  'app/views/admin/shared/_tabs.html.erb',
   'public/stylesheets/admin.css',
   'public/images/admin/alert-overlay.png',
   'public/images/admin/check.gif',
