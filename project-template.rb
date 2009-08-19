@@ -163,7 +163,7 @@ copy_remote_files([
 
 # Misc =========================================================================
 
-run "cp config/database.yml config/database.yml.sample"
+copy_remote_file 'config/database.yml'
 run "rm public/index.html"
 run "rm public/javascripts/prototype.js"
 run "rm public/javascripts/effects.js"
@@ -192,7 +192,11 @@ copy_remote_file 'config/initializers/fix_errors.rb'
 
 capify!
 
-copy_remote_file 'config/deploy.rb'
+copy_remote_files([
+  'config/deploy.rb',
+  'config/deploy/production.rb',
+  'config/deploy/staging.rb'
+])
 
 run "cp config/environments/production.rb config/environments/staging.rb"
 
