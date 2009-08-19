@@ -80,6 +80,7 @@ copy_remote_files([
   'app/controllers/admin/users_controller.rb',
   'app/views/users/_form.html.erb',
   'app/views/users/new.html.erb',
+  'app/views/users/index.html.erb',
   'app/views/users/edit.html.erb',
   'app/views/admin/users/index.html.erb',
   'app/views/admin/users/_form.html.erb',
