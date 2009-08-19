@@ -35,7 +35,7 @@ gem 'geokit' if options[:use_geokit]
 
 rakefile "bootstrap.rake", <<CODE
   namespace :app do
-    task :bootstrap do
+    task :bootstrap => :environment do
       User.create do |u|
         u.username              = 'admin'
         u.password              = 'admin'
@@ -48,7 +48,7 @@ CODE
 
 rakefile "seed.rake", <<CODE
   namespace :app do
-    task :seed do
+    task :seed => :environment do
     end
   end
 CODE
