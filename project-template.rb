@@ -82,7 +82,8 @@ copy_remote_files([
   'app/views/admin/users/show.html.erb',
   'app/views/admin/users/_user.html.erb',
   'app/helpers/layout_helper.rb',
-  'app/helpers/error_messages_helper.rb'
+  'app/helpers/error_messages_helper.rb',
+  'app/views/user_sessions/new.html.erb'
 ])
 
 route <<CODE
