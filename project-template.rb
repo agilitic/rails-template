@@ -40,24 +40,24 @@ end
 # Empty rake tasks =============================================================
 
 rakefile "bootstrap.rake", <<CODE
-  namespace :app do
-    task :bootstrap => :environment do
-      User.create do |u|
-        u.username              = 'admin'
-        u.password              = 'admin'
-        u.password_confirmation = 'admin'
-        u.email                 = 'admin@admin.com'
-        u.admin                 = true
-      end
+namespace :app do
+  task :bootstrap => :environment do
+    User.create do |u|
+      u.username              = 'admin'
+      u.password              = 'admin'
+      u.password_confirmation = 'admin'
+      u.email                 = 'admin@admin.com'
+      u.admin                 = true
     end
   end
+end
 CODE
 
 rakefile "seed.rake", <<CODE
-  namespace :app do
-    task :seed => :environment do
-    end
+namespace :app do
+  task :seed => :environment do
   end
+end
 CODE
 
 # Authentication system & admin layout =========================================
@@ -101,40 +101,40 @@ copy_remote_files([
 ])
 
 route <<CODE
-  map.resources :users
+map.resources :users
 CODE
 
 route <<CODE
-  map.signup 'signup',
-    :controller => 'users',
-    :action => 'new'
+map.signup 'signup',
+  :controller => 'users',
+  :action => 'new'
 CODE
 
 route <<CODE
-  map.resources :user_sessions
+map.resources :user_sessions
 CODE
 
 route <<CODE
-  map.login 'login',
-    :controller => 'user_sessions',
-    :action => 'new'
+map.login 'login',
+  :controller => 'user_sessions',
+  :action => 'new'
 CODE
 
 route <<CODE
-  map.logout 'logout',
-    :controller => 'user_sessions',
-    :action => 'destroy'
+map.logout 'logout',
+  :controller => 'user_sessions',
+  :action => 'destroy'
 CODE
 
 route <<CODE
-  map.namespace :admin do |admin|
-    admin.resources :users
-    admin.root :controller => 'users'
-  end
+map.namespace :admin do |admin|
+  admin.resources :users
+  admin.root :controller => 'users'
+end
 CODE
 
 route <<CODE
-  map.root :controller => 'users'
+map.root :controller => 'users'
 CODE
 
 # Javascripts ==================================================================
@@ -209,22 +209,22 @@ run "cp config/environments/production.rb config/environments/staging.rb"
 # Git setup ====================================================================
 
 file '.gitignore', <<CONTENT
-  coverage/*
-  log/*.log
-  log/*.pid
-  db/*.db
-  db/*.sqlite3
-  db/schema.rb
-  tmp/**/*
-  .DS_Store
-  doc/api
-  doc/app
-  config/database.yml
-  public/javascripts/all.js
-  public/stylesheets/all.js
-  coverage/*
-  .dotest/*
-  Thumbs.db
+coverage/*
+log/*.log
+log/*.pid
+db/*.db
+db/*.sqlite3
+db/schema.rb
+tmp/**/*
+.DS_Store
+doc/api
+doc/app
+config/database.yml
+public/javascripts/all.js
+public/stylesheets/all.js
+coverage/*
+.dotest/*
+Thumbs.db
 CONTENT
 
 git :init
