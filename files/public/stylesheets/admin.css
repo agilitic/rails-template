@@ -59,7 +59,7 @@ input { border:0 none; }
 td { padding: 12px; text-align:left; }
 tr td, th {border-bottom: 1px solid #bab9b9;}
 .table_main {width: 850px; border-top: 1px solid #bab9b9; border-right: 1px solid #bab9b9; border-left: 1px solid #bab9b9;}
-.table_main .delete {background:url(/images/admin_css/x2.gif) center left no-repeat; padding-left:12px;}
+.table_main .delete {background:url(/images/admin/x2.gif) center left no-repeat; padding-left:12px;}
 thead tr {
 	background-color:#d9d8d8; 
 	font-size:14px;
@@ -87,7 +87,7 @@ thead tr {
 	-moz-border-radius-topleft:5px;
 	-moz-border-radius-topright:5px;
 	-moz-box-shadow:0 1px 3px rgba(0, 0, 0, 0.5);
-	background:#222222 url(/images/admin_css/alert-overlay.png) repeat-x scroll 0 0;
+	background:#222222 url(/images/admin/alert-overlay.png) repeat-x scroll 0 0;
 	border-bottom:1px solid rgba(0, 0, 0, 0.25);
 	color:#FFFFFF;
 	cursor:pointer;
