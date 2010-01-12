@@ -1,0 +1,3 @@
+= Usage
+
+  rails project42 -m http://github.com/agilitic/rails-template/raw/master/project-template.rb
