@@ -16,6 +16,7 @@ end
 # Options ======================================================================
 
 options = {}
+
 options[:use_hoptoad] = yes?('Use hoptoad_notifier plugin?')
 options[:use_geokit] = yes?('Use GeoKit gem?')
 options[:use_responds_to_parent] = yes?('Use responds_to_parent plugin?')
@@ -50,6 +51,8 @@ if options[:use_geokit]
   plugin 'geokit-rails', :git => 'git://github.com/andre/geokit-rails.git'
   copy_remote_file 'config/initializers/geokit.rb'
 end
+
+rake "gems:install"
 
 # Config =======================================================================
 
@@ -127,13 +130,15 @@ copy_remote_files([
 # Misc =========================================================================
 
 copy_remote_file 'config/database.yml'
+copy_remote_file '.gems'
+
 run "rm public/index.html"
 run "rm public/javascripts/prototype.js"
 run "rm public/javascripts/effects.js"
 run "rm public/javascripts/dragdrop.js"
 run "rm public/javascripts/controls.js"
+
 rake "db:migrate"
-rake "gems:install"
 rake "app:bootstrap"
 
 # Initializers =================================================================
