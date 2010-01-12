@@ -138,7 +138,7 @@ rake "app:bootstrap"
 
 # Initializers =================================================================
 
-copy_remote_file 'config/initializers/ation_view_hacks.rb'
+copy_remote_file 'config/initializers/action_view_hacks.rb'
 copy_remote_file 'public/images/exclamation.png'
 
 # Capistrano ===================================================================
