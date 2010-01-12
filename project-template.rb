@@ -20,45 +20,44 @@ options[:use_hoptoad] = yes?('Use hoptoad_notifier plugin?')
 options[:use_geokit] = yes?('Use GeoKit gem?')
 options[:use_responds_to_parent] = yes?('Use responds_to_parent plugin?')
 
+options[:use_globalization] = yes?('Use globalization?') # install globalize/translates_routes
+options[:use_wysiwyg] = yes?('Use wysiwyg?')
+options[:bootstrap_smtp] = yes?('Bootstrap smtp?')
+options[:bootstrap_contact_form] = yes?('Bootstrap contact form?')
+options[:bootstrap_google_map] = yes?('Bootstrap google maps?')
+options[:use_capistrano] = yes?('Use Capistrano?')
+
 # Rails plugins & gems =========================================================
 
-plugin 'authlogic',          :git => 'git://github.com/binarylogic/authlogic.git'
-plugin 'will_paginate',      :git => 'git://github.com/mislav/will_paginate.git'
-plugin 'paperclip',          :git => 'git://github.com/thoughtbot/paperclip.git'
 plugin 'acts_as_list',       :git => 'git://github.com/rails/acts_as_list.git'
 plugin 'responds_to_parent', :git => 'git://github.com/markcatley/responds_to_parent.git' if options[:use_responds_to_parent]
 plugin 'hoptoad_notifier',   :git => 'git://github.com/thoughtbot/hoptoad_notifier.git' if options[:use_hoptoad]
 plugin 'misc_validators',    :git => 'git://github.com/aurels/misc_validators.git'
-plugin 'globalize2',         :git => 'git://github.com/joshmh/globalize2.git'
-plugin 'translate',          :git => 'git://github.com/newsdesk/translate.git'
+
+gem 'authlogic'
+gem 'will_paginate'
+gem 'paperclip'
+
+if options[:use_globalization]
+  gem 'globalize2'
+  plugin 'translate_routes', :git => 'git://github.com/raul/translate_routes.git'
+  copy_remote_file 'lib/tasks/translator.rake'
+  copy_remote_file 'lib/active_record/globalize_extensions.rb'
+end
 
 if options[:use_geokit]
   gem 'geokit'
   plugin 'geokit-rails', :git => 'git://github.com/andre/geokit-rails.git'
+  copy_remote_file 'config/initializers/geokit.rb'
 end
 
-# Empty rake tasks =============================================================
+# Config =======================================================================
 
-rakefile "bootstrap.rake", <<CODE
-namespace :app do
-  task :bootstrap => :environment do
-    User.create do |u|
-      u.username              = 'admin'
-      u.password              = 'admin'
-      u.password_confirmation = 'admin'
-      u.email                 = 'admin@admin.com'
-      u.admin                 = true
-    end
-  end
-end
-CODE
+copy_remote_files(["config/config.yml", "config/initializers/load_config.rb"])
 
-rakefile "seed.rake", <<CODE
-namespace :app do
-  task :seed => :environment do
-  end
-end
-CODE
+# Rake tasks ===================================================================
+
+copy_remote_files(["lib/tasks/bootstrap.rake", "lib/tasks/seed.rake", "lib/tasks/cron.rake", "lib/tasks/uml.rake"])
 
 # Authentication system & admin layout =========================================
 
@@ -100,42 +99,8 @@ copy_remote_files([
   'app/views/user_sessions/new.html.erb'
 ])
 
-route <<CODE
-map.resources :users
-CODE
 
-route <<CODE
-map.signup 'signup',
-  :controller => 'users',
-  :action => 'new'
-CODE
-
-route <<CODE
-map.resources :user_sessions
-CODE
-
-route <<CODE
-map.login 'login',
-  :controller => 'user_sessions',
-  :action => 'new'
-CODE
-
-route <<CODE
-map.logout 'logout',
-  :controller => 'user_sessions',
-  :action => 'destroy'
-CODE
-
-route <<CODE
-map.namespace :admin do |admin|
-  admin.resources :users
-  admin.root :controller => 'users'
-end
-CODE
-
-route <<CODE
-map.root :controller => 'users'
-CODE
+copy_remote_file 'config/routes.rb'
 
 # Javascripts ==================================================================
 
@@ -158,15 +123,6 @@ copy_remote_files([
   'public/facebox/tr.png'
 ])
 
-copy_remote_files([
-  'public/infinite_carousel/images/arrow_blank.png',
-  'public/infinite_carousel/images/arrow.png',
-  'public/infinite_carousel/infinite_carousel.css',
-  'public/infinite_carousel/infinite_carousel.js',
-])
-
-# lwrte
-
 # Misc =========================================================================
 
 copy_remote_file 'config/database.yml'
@@ -185,47 +141,25 @@ if options[:use_hoptoad]
   copy_remote_file 'config/initializers/hoptoad.rb'
 end
 
-if options[:use_geokit]
-  copy_remote_files([
-    'config/gmaps.yml',
-    'config/initializers/geokit.rb'
-  ])
-end
-
-copy_remote_file 'config/initializers/fix_errors.rb'
+copy_remote_file 'config/initializers/ation_view_hacks.rb'
+copy_remote_file 'public/images/exclamation.png'
 
 # Capistrano ===================================================================
 
-capify!
-
-copy_remote_files([
-  'config/deploy.rb',
-  'config/deploy/production.rb',
-  'config/deploy/staging.rb'
-])
+if options[:use_capistrano]
+  capify!
+  copy_remote_files([
+    'config/deploy.rb',
+    'config/deploy/production.rb',
+    'config/deploy/staging.rb'
+  ])
+end
 
 run "cp config/environments/production.rb config/environments/staging.rb"
 
 # Git setup ====================================================================
 
-file '.gitignore', <<CONTENT
-coverage/*
-log/*.log
-log/*.pid
-db/*.db
-db/*.sqlite3
-db/schema.rb
-tmp/**/*
-.DS_Store
-doc/api
-doc/app
-config/database.yml
-public/javascripts/all.js
-public/stylesheets/all.js
-coverage/*
-.dotest/*
-Thumbs.db
-CONTENT
+copy_remote_file '.gitignore'
 
 git :init
 git :add => "."

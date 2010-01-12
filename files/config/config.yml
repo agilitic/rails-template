@@ -1,0 +1,50 @@
+development:
+  smtp:
+    address: "smtp.gmail.com"
+    port: 587
+    authentication: plain
+    enable_starttls_auto: true
+    user_name: FIXME
+    password: FIXME
+  s3:
+    access_key_id: FIXME
+    secret_access_key: FIXME
+    bucket: FIXME
+  gmaps:
+    api_key: FIXME
+  hoptoad:
+    api_key: FIXME
+
+staging:
+  smtp:
+    address: "smtp.gmail.com"
+    port: 587
+    authentication: plain
+    enable_starttls_auto: true
+    user_name: FIXME
+    password: FIXME
+  s3:
+    access_key_id: FIXME
+    secret_access_key: FIXME
+    bucket: FIXME
+  gmaps:
+    api_key: FIXME
+  hoptoad:
+    api_key: FIXME
+
+production:
+  smtp:
+    address: "smtp.gmail.com"
+    port: 587
+    authentication: plain
+    enable_starttls_auto: true
+    user_name: FIXME
+    password: FIXME
+  s3:
+    access_key_id: FIXME
+    secret_access_key: FIXME
+    bucket: FIXME
+  gmaps:
+    api_key: FIXME
+  hoptoad:
+    api_key: FIXME
