@@ -99,6 +99,7 @@ copy_remote_files([
   'app/views/user_sessions/new.html.erb'
 ])
 
+# Routes =======================================================================
 
 copy_remote_file 'config/routes.rb'
 
@@ -106,7 +107,7 @@ copy_remote_file 'config/routes.rb'
 
 copy_remote_files([
   'public/javascripts/jquery-1.3.2.min.js',
-  'public/javascripts/jquery.ui-1.7.2.custom.min.js',
+  'public/javascripts/jquery-ui-1.7.2.custom.min.js',
   'public/javascripts/jquery.tablednd.js'
 ])
 
@@ -136,10 +137,6 @@ rake "gems:install"
 rake "app:bootstrap"
 
 # Initializers =================================================================
-
-if options[:use_hoptoad]
-  copy_remote_file 'config/initializers/hoptoad.rb'
-end
 
 copy_remote_file 'config/initializers/ation_view_hacks.rb'
 copy_remote_file 'public/images/exclamation.png'
